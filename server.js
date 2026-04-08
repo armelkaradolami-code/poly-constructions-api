@@ -6,17 +6,26 @@ app.use(express.json());
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true });
+});
+
 app.post('/api/send-email', async (req, res) => {
-  const { to, subject, message } = req.body;
+  try {
+    const { to, subject, message } = req.body;
 
-  await resend.emails.send({
-    from: 'contact@ton-domaine.ch',
-    to,
-    subject,
-    html: message
-  });
+    const result = await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to,
+      subject,
+      html: message
+    });
 
-  res.json({ success: true });
+    res.json({ success: true, result });
+  } catch (error) {
+    console.error('Erreur envoi email:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
