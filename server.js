@@ -4,13 +4,11 @@ import { Resend } from 'resend';
 
 const app = express();
 
-app.use(
-  cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  })
-);
+app.use(cors({
+  origin: '*',
+}));
+
+app.options('*', cors()); // ✅ IMPORTANT (fix CORS)
 
 app.use(express.json());
 
